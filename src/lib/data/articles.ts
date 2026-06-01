@@ -40,3 +40,12 @@ export async function getPublishedArticleBySlug(slug: string) {
     where: { slug, status: "PUBLISHED" as ArticleStatus },
   });
 }
+
+export async function getArticleStats() {
+  const [total, published, draft] = await Promise.all([
+    prisma.article.count(),
+    prisma.article.count({ where: { status: "PUBLISHED" } }),
+    prisma.article.count({ where: { status: "DRAFT" } }),
+  ]);
+  return { total, published, draft };
+}
