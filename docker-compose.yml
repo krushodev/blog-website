@@ -15,20 +15,27 @@ services:
       - NEXT_TELEMETRY_DISABLED=1
     env_file:
       - .env.local
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
 
-  # Uncomment in Phase 2 when the DB schema is ready
-  # db:
-  #   image: postgres:16-alpine
-  #   ports:
-  #     - "5432:5432"
-  #   environment:
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_PASSWORD: postgres
-  #     POSTGRES_DB: blogdb
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   restart: unless-stopped
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: blogdb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
-# volumes:
-#   postgres_data:
+volumes:
+  postgres_data:
