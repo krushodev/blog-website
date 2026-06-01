@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getPublishedArticles } from "@/lib/data/articles";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "DevLog — AI & Programming",
   description: "High-signal writing on AI and software engineering.",

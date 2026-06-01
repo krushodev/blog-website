@@ -4,7 +4,14 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
-import { getPublishedArticleBySlug } from "@/lib/data/articles";
+import { getPublishedArticleBySlug, getPublishedArticles } from "@/lib/data/articles";
+
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const articles = await getPublishedArticles().catch(() => []);
+  return articles.map((a) => ({ slug: a.slug }));
+}
 
 interface Props {
   params: Promise<{ slug: string }>;
